@@ -1,0 +1,10 @@
+{
+  "name": "Span Panel",
+  "domains": [
+    "binary_sensor",
+    "sensor",
+    "switch",
+  ],
+  "homeassistant": "2022.7.0",
+  "iot_class": "Local Push"
+}

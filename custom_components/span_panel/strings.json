@@ -1,0 +1,26 @@
+{
+  "config": {
+    "flow_title": "{serial} ({host})",
+    "step": {
+      "user": {
+        "title": "Connect to the Span Panel",
+        "data": {
+          "host": "[%key:common::config_flow::data::host%]"
+        }
+      },
+      "confirm_discovery": {
+        "title": "[%key:component::span_panel::config::step::user::title%]",
+        "description": "Do you want to setup {serial} ({host})?"
+      }
+    },
+    "error": {
+      "cannot_connect": "[%key:common::config_flow::error::cannot_connect%]",
+      "unknown": "[%key:common::config_flow::error::unknown%]",
+      "invalid_auth": "[%key:common::config_flow::error::invalid_auth%]"
+    },
+    "abort": {
+      "single_instance_allowed": "[%key:common::config_flow::abort::single_instance_allowed%]",
+      "no_devices_found": "[%key:common::config_flow::abort::no_devices_found%]"
+    }
+  }
+}
