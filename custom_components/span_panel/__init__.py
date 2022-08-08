@@ -50,7 +50,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         _LOGGER.debug("ASYNC_UPDATE_DATA %s" % span_panel)
         async with async_timeout.timeout(30):
             try:
-                await span_panel.spaces.getData()
+                await span_panel.circuits.getData()
                 await span_panel.getStatusData()
                 await span_panel.getPanelData()
             except httpx.HTTPStatusError as err:
@@ -59,7 +59,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
                 raise UpdateFailed(f"Error communicating with API: {err}") from err
 
             data = { }
-            data["spaces"] = span_panel.spaces
+            data["circuits"] = span_panel.circuits
             data["panel"] = span_panel.panel_results.json()
 #            _LOGGER.debug("Retrieved data from API: %s", data)
 
