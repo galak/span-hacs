@@ -46,6 +46,7 @@ CIRCUITS_SENSORS = (
         name="Power",
         native_unit_of_measurement=POWER_WATT,
         state_class=SensorStateClass.MEASUREMENT,
+        device_class=SensorDeviceClass.POWER,
         value_fn=lambda circuits, id: abs(cast(float, circuits.power(id))),
     ),
     SpanPanelCircuitsSensorEntityDescription(
@@ -71,6 +72,7 @@ PANEL_SENSORS = (
         key="instantGridPowerW",
         name="Current Power",
         native_unit_of_measurement=POWER_WATT,
+        device_class=SensorDeviceClass.POWER,
         state_class=SensorStateClass.MEASUREMENT,
     ),
 )
