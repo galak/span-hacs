@@ -14,6 +14,7 @@ _LOGGER = logging.getLogger(__name__)
 
 SPAN_CIRCUITS = "circuits"
 SPAN_SYSTEM = "system"
+PANEL_POWER = "instantGridPowerW"
 SYSTEM_DOOR_STATE = "doorState"
 SYSTEM_DOOR_STATE_CLOSED = "CLOSED"
 SYSTEM_DOOR_STATE_OPEN = "OPEN"
@@ -92,6 +93,10 @@ class SpanPanel:
         self.panel_results = await self.getData(PANEL_URL)
 
         return
+    
+    def power(self):
+        raw_json = self.panel_results.json()
+        return self.json_data[PANEL_POWER]
 
     async def getStatusData(self):
         self.status_results = await self.getData(STATUS_URL)
@@ -201,8 +206,8 @@ CIRCUITS_RELAY = "relayState"
 CIRCUITS_RELAY_OPEN = "OPEN"
 CIRCUITS_RELAY_CLOSED = "CLOSED"
 CIRCUITS_POWER = "instantPowerW"
-CIRCUITS_ENERGY_PRODUCED = "importEnergyAccumWh"
-CIRCUITS_ENERGY_CONSUMED = "exportEnergyAccumWh"
+CIRCUITS_ENERGY_PRODUCED = "producedEnergyWh"
+CIRCUITS_ENERGY_CONSUMED = "consumedEnergyWh"
 CIRCUITS_BREAKER_POSITIONS = "tabs"
 CIRCUITS_PRIORITY = "priority"
 CIRCUITS_IS_USER_CONTROLLABLE = "is_user_controllable"
