@@ -6,6 +6,7 @@ import time
 import httpx
 
 STATUS_URL = "http://{}/api/v1/status"
+SPACES_URL = "http://{}/api/v1/spaces"
 CIRCUITS_URL = "http://{}/api/v1/circuits"
 PANEL_URL = "http://{}/api/v1/panel"
 
@@ -37,6 +38,19 @@ class SpanPanel:
         self.circuits = SpanPanelCircuits(self)
         self.panel_results = None
         self._async_client = async_client
+
+    async def circuits_url(self):
+        # The API changed in r202223 but appears to simply have renamed
+        # the endpoint, so we pick a different URL based on the version.
+
+        # firmware_version() requires that getStatusData() has been
+        # called at least once
+        if self.status_results is None:
+            await self.getStatusData()
+
+        if self.firmware_version() < "spanos2/r202223/04":
+            return SPACES_URL
+        return CIRCUITS_URL
 
     @property
     def async_client(self):
@@ -229,7 +243,7 @@ class SpanPanelCircuits:
         """to fetching inverter data."""
         """Update from PC endpoint."""
 
-        results = await self.panel.getData(CIRCUITS_URL)
+        results = await self.panel.getData(await self.panel.circuits_url())
 
         # Can get:
         # HTTPStatusError - httpx.HTTPStatusError: Server error '500 Internal Server Error' for url 'http://span.lan/api/v1/circuits'
@@ -267,7 +281,7 @@ class SpanPanelCircuits:
     async def _set_relay(self, id, state):
         # state should be "OPEN" or "CLOSED"
         json = {"relay_state_in":{"relayState":state}}
-        results = await self.panel.setJSONData(CIRCUITS_URL+"/{}", id, json)
+        results = await self.panel.setJSONData(await self.panel.circuits_url()+"/{}", id, json)
 
     async def set_relay_closed(self, id):
         await self._set_relay(id, CIRCUITS_RELAY_CLOSED)
@@ -284,7 +298,7 @@ class SpanPanelCircuits:
 
     async def set_priority(self, id, priority):
         json = {"priority_in":{"priority":priority}}
-        results = await self.panel.setJSONData(CIRCUITS_URL+"/{}", id, json)
+        results = await self.panel.setJSONData(await self.panel.circuits_url()+"/{}", id, json)
 
         # add error checking code on response, we can get:
         # '<Response [400 Bad Request]>' if 'id' has 'is_user_controllable'
