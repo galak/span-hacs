@@ -75,6 +75,41 @@ PANEL_SENSORS = (
         device_class=SensorDeviceClass.POWER,
         state_class=SensorStateClass.MEASUREMENT,
     ),
+    SensorEntityDescription(
+        key="feedthroughPowerW",
+        name="Feed Through Power",
+        native_unit_of_measurement=POWER_WATT,
+        device_class=SensorDeviceClass.POWER,
+        state_class=SensorStateClass.MEASUREMENT,
+    ),
+    SensorEntityDescription(
+        key="mainMeterEnergy.producedEnergyWh",
+        name="Main Meter Produced Energy",
+        native_unit_of_measurement=ENERGY_WATT_HOUR,
+        state_class=SensorStateClass.TOTAL_INCREASING,
+        device_class=SensorDeviceClass.ENERGY,
+    ),
+    SensorEntityDescription(
+        key="mainMeterEnergy.consumedEnergyWh",
+        name="Main Meter Consumed Energy",
+        native_unit_of_measurement=ENERGY_WATT_HOUR,
+        state_class=SensorStateClass.TOTAL_INCREASING,
+        device_class=SensorDeviceClass.ENERGY,
+    ),
+    SensorEntityDescription(
+        key="feedthroughEnergy.producedEnergyWh",
+        name="Feed Through Produced Energy",
+        native_unit_of_measurement=ENERGY_WATT_HOUR,
+        state_class=SensorStateClass.TOTAL_INCREASING,
+        device_class=SensorDeviceClass.ENERGY,
+    ),
+    SensorEntityDescription(
+        key="feedthroughEnergy.consumedEnergyWh",
+        name="Feed Through Consumed Energy",
+        native_unit_of_measurement=ENERGY_WATT_HOUR,
+        state_class=SensorStateClass.TOTAL_INCREASING,
+        device_class=SensorDeviceClass.ENERGY,
+    ),
 )
 
 ICON = "mdi:flash"
@@ -137,10 +172,15 @@ class SpanPanelPanel(CoordinatorEntity, SensorEntity):
     @property
     def native_value(self) -> float | None:
         """Return the state of the sensor."""
-        key = self.entity_description.key
+        key = self.entity_description.key.split(".")
         span_panel: SpanPanel = self.coordinator.data
         panel = span_panel.panel_results.json()
-        value = panel[key]
+        # Most sensors are simple value = panel[key], but in order
+        # to support mainMeterEnergy.producedEnergyWh, we split the
+        # key by `.` and loop down through the value
+        value = panel
+        for k in key:
+            value = value[k]
         _LOGGER.debug("NATIVE VALUE [%s] [%s]" % (key, value))
         return cast(float, value)
 
