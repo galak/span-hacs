@@ -26,6 +26,7 @@ PRIORITY_TO_HASS = {
     "MUST_HAVE": "Must Have",
     "NICE_TO_HAVE": "Nice to Have",
     "NOT_ESSENTIAL": "Not Essential",
+    "NON_ESSENTIAL": "Non Essential",
 }
 HASS_TO_PRIORITY = {v: k for k, v in PRIORITY_TO_HASS.items()}
 
